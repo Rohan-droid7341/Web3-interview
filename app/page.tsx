@@ -20,7 +20,7 @@ export default function Home() {
           >
             Log Out
           </button>
-          <Link href="/dashboard">
+          <Link href="/privy-dashboard">
             <button className="ml-4 rounded-md bg-gray-200 px-4 py-2 text-sm text-gray-800">
               Go to Dashboard
             </button>
@@ -36,6 +36,7 @@ export default function Home() {
         >
           Log In
         </button>
+        
         </>
       )}
     </main>
