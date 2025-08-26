@@ -9,10 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@privy-io/react-auth": "^2.21.4",
+    "@privy-io/react-auth": "^2.22.0",   
+    "@privy-io/server-auth": "^1.32.0", 
+    "circomlibjs": "^0.1.7",
     "next": "15.5.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-hot-toast": "^2.6.0",
+    "snarkjs": "^0.7.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
