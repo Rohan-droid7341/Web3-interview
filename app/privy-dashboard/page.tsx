@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [next, setNext] = useState(false);
   const [verifyResult] = useState<any>();
   const {
     ready,
@@ -21,6 +22,12 @@ export default function DashboardPage() {
     }
   }, [ready, authenticated, router]);
 
+  useEffect(() => {
+    if(next){
+      router.push('/zkp-dashboard');
+    }
+  }, [next, router]);
+
 
 
   return (
@@ -34,6 +41,12 @@ export default function DashboardPage() {
               className="text-sm bg-violet-200 hover:text-violet-900 py-2 px-4 rounded-md text-violet-700"
             >
               Logout
+            </button>
+            <button
+              onClick={() => setNext(true)}
+              className="ml-4 text-sm bg-violet-200 hover:text-violet-900 py-2 px-4 rounded-md text-violet-700"
+            >
+              ZKP Dashboard
             </button>
           </div>
           
@@ -62,3 +75,8 @@ export default function DashboardPage() {
     </main>
   );
 }
+
+
+
+
+
