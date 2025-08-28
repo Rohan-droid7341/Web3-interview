@@ -1,5 +1,6 @@
 import './globals.css';
 import Providers from './providers';
+import GraphProviders from './graphProvider';
 
 export const metadata = {
   title: 'Privy + Next.js App Router',
@@ -10,7 +11,9 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">  
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <GraphProviders>{children}</GraphProviders>
+        </Providers>
       </body>
     </html>
   );

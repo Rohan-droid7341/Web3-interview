@@ -2,21 +2,19 @@ import { NextResponse } from "next/server"
 
 export async function GET() {
   try {
-    // Using CoinGecko API for real-time ETH price data
     const response = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true",
       {
         headers: {
           Accept: "application/json",
         },
-        next: { revalidate: 30 }, // Cache for 30 seconds
+        next: { revalidate: 30 }, 
       },
     )
 
     if (!response.ok) {
       if (response.status === 429) {
         console.log("[v0] Rate limited, returning mock data")
-        // Return mock data when rate limited
         const mockData = {
           price: 3500 + Math.random() * 1000,
           change24h: (Math.random() - 0.5) * 200,
@@ -33,7 +31,6 @@ export async function GET() {
     const data = await response.json()
     const ethData = data.ethereum
 
-    // Format the response to match our component interface
     const formattedData = {
       price: ethData.usd,
       change24h: ethData.usd * (ethData.usd_24h_change / 100),

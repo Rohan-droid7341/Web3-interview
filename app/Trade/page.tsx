@@ -3,6 +3,7 @@ import TradingInterface from "../components/TradingInterfrace";
 import ApproveWETH from "../components/ApproveWETH";
 // import Transfer from "../components/Transfer";
 import EthPriceTracker from "../components/EthPriceTracker";
+// import Transaction from "../components/Transaction";
 export default function Trade() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -12,6 +13,8 @@ export default function Trade() {
         <ApproveWETH />
         <EthPriceTracker />
       <TradingInterface />
+      
+
     </div>
   );
 }
