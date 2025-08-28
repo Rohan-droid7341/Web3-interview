@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "PaperTrading_sol": {
+      "address": "0xfac3aF0BE0Ec503EC148b43ecFFE8F1591180D0D",
+      "startBlock": 9078372
+    }
+  }
+}

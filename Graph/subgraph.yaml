@@ -1,0 +1,32 @@
+specVersion: 1.3.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: PaperTrading_sol
+    network: sepolia
+    source:
+      address: "0xfac3aF0BE0Ec503EC148b43ecFFE8F1591180D0D"
+      abi: PaperTrading_sol
+      startBlock: 9078372
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - OwnershipTransferred
+        - TestUSDRedeemed
+        - WETHDeposited
+      abis:
+        - name: PaperTrading_sol
+          file: ./abis/PaperTrading_sol.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: TestUSDRedeemed(indexed address,uint256,uint256,uint256)
+          handler: handleTestUSDRedeemed
+        - event: WETHDeposited(indexed address,uint256,uint256,uint256)
+          handler: handleWETHDeposited
+      file: ./src/paper-trading-sol.ts
