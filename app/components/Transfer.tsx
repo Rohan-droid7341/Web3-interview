@@ -9,7 +9,6 @@ export default function OwnershipManager() {
   const { writeContract, data: hash, isPending } = useWriteContract();
   const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
-  // Get current TestUSD owner
   const { data: currentOwner } = useReadContract({
     address: CONTRACTS.TEST_USD,
     abi: ERC20_ABI,

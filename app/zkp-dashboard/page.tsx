@@ -126,7 +126,7 @@ export default function ZkpDashboardPage() {
               <div>
                 <h3 className="font-semibold text-violet-700">1. The Secret (Private Input)</h3>
                 <p className="text-sm text-gray-600">This is the private data that only you know. For this demo, it's your unique Privy DID. You will prove you know this without ever revealing it.</p>
-                <pre className="mt-1 bg-violet-50 text-violet-900 font-mono p-2 text-xs rounded overflow-x-auto">{user.id}</pre>
+                <pre className="mt-1 bg-violet-50 text-violet-900 font-mono p-2 text-xs rounded overflow-x-auto">{user?.id ?? "NO user Id" }</pre>
               </div>
               {/* The Verification Key */}
               <div>

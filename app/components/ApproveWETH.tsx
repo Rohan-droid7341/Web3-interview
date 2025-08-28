@@ -4,7 +4,6 @@ import { useState } from "react";
 import { parseEther } from "viem";
 import { useAccount, useWriteContract } from "wagmi";
 
-// --- WETH ABI (only approve function) ---
 const WETH_ABI = [
   {
     name: "approve",
@@ -18,9 +17,8 @@ const WETH_ABI = [
   },
 ];
 
-// --- Replace with your deployed addresses ---
-const WETH_ADDRESS = "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9"; // Sepolia WETH
-const TRADING_CONTRACT = "0xfac3af0be0ec503ec148b43ecffe8f1591180d0d"; // replace with yours
+const WETH_ADDRESS = "0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9"; 
+const TRADING_CONTRACT = "0xfac3af0be0ec503ec148b43ecffe8f1591180d0d"; 
 
 export default function ApproveWETH() {
   const { address } = useAccount();

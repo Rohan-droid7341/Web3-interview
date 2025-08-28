@@ -7,11 +7,9 @@ import {
   useReadContract, 
   useWriteContract, 
   useWaitForTransactionReceipt,
-//   type WriteContractErrorType
 } from 'wagmi';
 import { parseEther, formatEther, BaseError } from 'viem';
 
-// WETH Contract Details for Sepolia Testnet
 const WETH_CONTRACT_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ea00A7896Cf';
 
 const WETH_ABI = [
@@ -34,13 +32,11 @@ const WETH_ABI = [
 export function WrapEth() {
   const [amount, setAmount] = useState('');
 
-  // --- DEBUGGING STEP 1: Check the core account connection ---
   const { address, isConnected, status } = useAccount();
   console.log('[DEBUG] Account Status:', { address, isConnected, status });
 
   const { data: hash, writeContract, isPending, error: writeError } = useWriteContract();
 
-  // --- DEBUGGING STEP 2: Check the ETH balance hook ---
   const { 
     data: ethBalance, 
     refetch: refetchEthBalance,
@@ -49,12 +45,10 @@ export function WrapEth() {
     error: ethBalanceError
   } = useBalance({ 
     address,
-    // The query will not run until `address` is defined.
     query: { enabled: !!address }
   });
   console.log('[DEBUG] ETH Balance Hook:', { data: ethBalance, isLoading: isEthBalanceLoading, isError: isEthBalanceError, error: ethBalanceError });
 
-  // --- DEBUGGING STEP 3: Check the WETH balance hook ---
   const { 
     data: wethBalance, 
     refetch: refetchWethBalance,
@@ -65,8 +59,8 @@ export function WrapEth() {
     address: WETH_CONTRACT_ADDRESS,
     abi: WETH_ABI,
     functionName: 'balanceOf',
-    args: [address!], // The '!' is safe because of the `enabled` flag below
-    query: { enabled: !!address }, // This is crucial: the hook will wait until `address` exists.
+    args: [address!], 
+    query: { enabled: !!address }, 
   });
   console.log('[DEBUG] WETH Balance Hook:', { data: wethBalance, isLoading: isWethBalanceLoading, isError: isWethBalanceError, error: wethBalanceError });
 
@@ -93,7 +87,6 @@ export function WrapEth() {
     }
   }, [isConfirmed, refetchEthBalance, refetchWethBalance]);
 
-//   const friendlyWriteError = getFriendlyErrorMessage(writeError);    
   const isBalancesLoading = isEthBalanceLoading || isWethBalanceLoading;
 
   return (
@@ -148,7 +141,6 @@ export function WrapEth() {
       
       {hash && <div className="mt-4 text-sm text-gray-600">Transaction Hash: <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{hash}</a></div>}
       {isConfirmed && <div className="mt-2 text-green-600 font-medium">Transaction successful! Balances updated.</div>}
-      {/* {friendlyWriteError && <div className="mt-2 text-red-600">Error: {friendlyWriteError}</div>} */}
     </div>
   );
 }

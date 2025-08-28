@@ -16,14 +16,12 @@ export default function AdminPanel() {
   const { writeContract, data: hash, isPending, error } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
-  // Check if current user is the owner of TestUSD contract
   const { data: owner } = useReadContract({
     address: CONTRACTS.TEST_USD,
     abi: ERC20_ABI,
     functionName: 'owner',
   });
 
-  // Get TestUSD total supply
   const { data: totalSupply, refetch: refetchTotalSupply } = useReadContract({
     address: CONTRACTS.TEST_USD,
     abi: ERC20_ABI,
@@ -32,14 +30,12 @@ export default function AdminPanel() {
 
   const isOwner = owner && address && owner.toLowerCase() === address.toLowerCase();
 
-  // Auto-set current user address for minting
   useEffect(() => {
     if (address && !mintToAddress) {
       setMintToAddress(address);
     }
   }, [address, mintToAddress]);
 
-  // Refresh data after transaction
   useEffect(() => {
     if (isConfirmed) {
       refetchTotalSupply();

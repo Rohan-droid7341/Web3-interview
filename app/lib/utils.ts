@@ -26,8 +26,16 @@ export function formatPrice(priceInTestUSD: bigint): string {
   }).format(Number(price));
 }
 
+
 export function formatPnL(pnl: bigint): { formatted: string; isProfit: boolean } {
-  const isProfit = pnl >= 0n;
-  const formatted = formatWETH(pnl < 0n ? -pnl : pnl);
+  // FIX: Replaced `0n` with `BigInt(0)` for broader compatibility.
+  const isProfit = pnl >= BigInt(0);
+  
+  // Get the absolute value of the PnL before formatting.
+  const absolutePnL = pnl < BigInt(0) ? -pnl : pnl;
+  
+  // Format the absolute value.
+  const formatted = formatWETH(absolutePnL);
+  
   return { formatted, isProfit };
 }
