@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Overwhelm - Trading PlayGround 
 
-## Getting Started
+Overwhelm is a decentralized trading dApp designed to help beginners step into the world of trading without the risks of losing real money. Using dummy tokens, users can learn the ins and outs of trading while still experiencing real-time market dynamics. With live price feeds for Ethereum (ETH) and USD tokens, users can practice trading just like in real markets. A built-in faucet lets them wrap their Sepolia ETH into WETH, forming the foundation for all trades inside the app.
 
-First, run the development server:
+This immersive and risk-free environment provides an ideal training ground for aspiring traders to hone their skills and build confidence before venturing into live markets.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+![alt text](image.png)   // ethereum price
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Table of Contents
 
-## Learn More
+- [Core Features](#core-features)  
+- [Tech Stack](#tech-stack)  
+- [UI Components](#ui-components)  
+- [Rating Tech Stack](#rating-tech-stack)  
+- [Future Plans](#future-plans)  
 
-To learn more about Next.js, take a look at the following resources:
+## Core Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- *Risk-Free Trading*  
+Experiment with trading strategies using dummy tokens without any real financial consequences.
+- *Real-Time Market Data*  
+Experience authentic market conditions with live price feeds for ETH and USD tokens
+- *Seamless Onboarding*  
+Get started quickly and easily with embedded wallet creation.
+- *Practice with WETH*  
+A built-in faucet allows you to wrap Sepolia ETH into WETH to use in the trading playground.
+- *Enhanced Privacy*  
+An extra layer of privacy and authentication is provided through the use of Zero-Knowledge Proofs.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- *Frontend:* Next.js (App Router), Tailwind , Typescript  
+- *Wallet* Privy  
+- *Blockchain Integration:* wagmi, viem  
+- *Second Layer Auth * Zero-Knowledge Proof
+- *Event quering and fetching (indexing)* Graph Protocol
+- *Live Price* Chanlink Smart Feed 
+- *ERC20* Solidity Contract
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## UI Components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. Landing Page  
+
+A clean welcome screen prompting users to connect their wallet and start exploring.
+
+![Landing Page](https://github.com/user-attachments/assets/62744b53-527c-4642-8162-e557102ef9d9)
+
+### 2. Dashboard  
+
+User control panel showing balances, usage stats, and quick navigation.
+
+![Dashboard](https://github.com/user-attachments/assets/5e1c70da-df65-4ba3-a442-5bdc0e7bddad)
+
+### 3. Decks List  
+
+Searchable grid/list of all on-chain decks, with key metrics (returns, risk, entry cost).
+
+![Decks List](https://github.com/user-attachments/assets/0f6b1017-0eae-4591-b5d4-4fa028399ccf)
+
+### 4. Portfolio  
+
+Personal summary of invested decks, profits, and withdrawal options.
+
+![Portfolio](https://github.com/user-attachments/assets/0b8228e7-bf42-44ae-9634-53f1b22f789b)
+
+### 5. Deck Creation  
+
+Form-based UI to define strategy parameters, pay creation fee, and submit for approval.
+
+![Create Deck](https://github.com/user-attachments/assets/ce71d1bb-47ed-4978-8886-1106489459b5)
+
+### 6. Buy Token  
+
+In-app swap interface to buy the platform’s token with RTBTC.
+
+![Buy Token](https://github.com/user-attachments/assets/8d593556-c935-47b2-aa5e-575b40546442)
+
+## 🤖 AI’s View on Investment in Decks  
+
+Visualization of how our AI model evaluates deck performance and suggests portfolio allocations.
+
+![AI View](https://github.com/user-attachments/assets/ec8d404f-596f-4b95-b90c-e9145df568be)
+
+
+
