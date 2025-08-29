@@ -6,8 +6,29 @@ import { useEffect, useState } from 'react';
 import Script from 'next/script';
 import { FiLock, FiKey, FiCpu, FiCheckCircle, FiXCircle, FiLoader, FiLogOut, FiArrowRight } from 'react-icons/fi';
 
-// Declaration for the snarkjs library loaded via script tag
-declare const snarkjs: any;
+
+interface ZkpResult {
+  proof: unknown;           
+  publicSignals: unknown;
+}
+
+declare const snarkjs: {
+  groth16: {
+    fullProve: (
+      inputs: Record<string, unknown>,
+      wasmPath: string,
+      zkeyPath: string
+    ) => Promise<ZkpResult>;
+    verify: (
+      vKey: object,
+      publicSignals: unknown,
+      proof: unknown
+    ) => Promise<boolean>;
+  };
+};
+
+
+
 
 export default function ZkpDashboardPage() {
   const router = useRouter();
@@ -15,18 +36,16 @@ export default function ZkpDashboardPage() {
 
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [verificationKey, setVerificationKey] = useState<object | null>(null);
-  const [zkp, setZkp] = useState<{ proof: any; publicSignals: any } | null>(null);
+  const [zkp, setZkp] = useState<ZkpResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultMessage, setResultMessage] = useState<string | null>(null);
 
-  // Redirect to home if not authenticated
   useEffect(() => {
     if (ready && !authenticated) {
       router.push('/');
     }
   }, [ready, authenticated, router]);
 
-  // Fetch the verification key on component mount
   useEffect(() => {
     async function loadVerificationKey() {
       try {
@@ -40,9 +59,7 @@ export default function ZkpDashboardPage() {
     loadVerificationKey();
   }, []);
 
-  /**
-   * Converts a string into a BigInt for use as a private input in a Circom circuit.
-   */
+  
   function stringToBigInt(s: string): bigint {
     const encoder = new TextEncoder();
     const encoded = encoder.encode(s);
@@ -53,9 +70,7 @@ export default function ZkpDashboardPage() {
     return BigInt(hex);
   }
 
-  /**
-   * Generates a ZK proof and verifies it on the client side.
-   */
+  
   async function generateAndVerifyProof() {
     if (!user?.id || !isScriptLoaded || !verificationKey) {
       alert('ZK components are not loaded yet. Please wait and try again.');
@@ -92,7 +107,6 @@ export default function ZkpDashboardPage() {
     }
   }
 
-  // A loading state while Privy is getting ready
   if (!ready || !authenticated) {
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white">

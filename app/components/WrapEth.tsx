@@ -8,7 +8,7 @@ import {
   useWriteContract, 
   useWaitForTransactionReceipt,
 } from 'wagmi';
-import { parseEther, formatEther, BaseError } from 'viem';
+import { parseEther, formatEther } from 'viem';
 
 const WETH_CONTRACT_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ea00A7896Cf';
 
@@ -35,7 +35,7 @@ export function WrapEth() {
   const { address, isConnected, status } = useAccount();
   console.log('[DEBUG] Account Status:', { address, isConnected, status });
 
-  const { data: hash, writeContract, isPending, error: writeError } = useWriteContract();
+  const { data: hash, writeContract, isPending } = useWriteContract();
 
   const { 
     data: ethBalance, 

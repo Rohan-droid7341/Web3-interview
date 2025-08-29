@@ -138,7 +138,6 @@ export default function EthPriceTracker() {
   }
 
   const isPositive = priceData.changePercent24h >= 0
-  const changeColor = isPositive ? "text-success" : "text-destructive"
   const TrendIcon = isPositive ? TrendingUp : TrendingDown
 
   const chartData = historicalData.map((item, index) => ({
