@@ -5,7 +5,7 @@ Overwhelm is a decentralized trading dApp designed to help beginners step into t
 This immersive and risk-free environment provides an ideal training ground for aspiring traders to hone their skills and build confidence before venturing into live markets.
 
 
-![alt text](image.png)   // ethereum price
+![alt text](image.png)  
 
 
 ## Table of Contents
@@ -34,10 +34,10 @@ An extra layer of privacy and authentication is provided through the use of Zero
 - *Frontend:* Next.js (App Router), Tailwind , Typescript  
 - *Wallet* Privy  
 - *Blockchain Integration:* wagmi, viem  
-- *Second Layer Auth * Zero-Knowledge Proof
-- *Event quering and fetching (indexing)* Graph Protocol
-- *Live Price* Chanlink Smart Feed 
-- *ERC20* Solidity Contract
+- *Second Layer Auth:* Zero-Knowledge Proof
+- *Event quering and fetching (indexing):* Graph Protocol
+- *Live Price:* Chanlink Smart Feed 
+- *ERC20:* Solidity Contract
 
 ## UI Components
 
@@ -45,43 +45,36 @@ An extra layer of privacy and authentication is provided through the use of Zero
 
 A clean welcome screen prompting users to connect their wallet and start exploring.
 
-![Landing Page](https://github.com/user-attachments/assets/62744b53-527c-4642-8162-e557102ef9d9)
+<img width="1878" height="851" alt="image" src="https://github.com/user-attachments/assets/271b2b79-e209-4e73-a868-2952fc15b3cc" />
 
-### 2. Dashboard  
 
-User control panel showing balances, usage stats, and quick navigation.
+### 2. Zkp Auth  
 
-![Dashboard](https://github.com/user-attachments/assets/5e1c70da-df65-4ba3-a442-5bdc0e7bddad)
+Second level of security to Overwhelm
 
-### 3. Decks List  
+<img width="1855" height="612" alt="image" src="https://github.com/user-attachments/assets/bffc7df2-dfdb-4c57-9b81-cc0332d70c97" />
 
-Searchable grid/list of all on-chain decks, with key metrics (returns, risk, entry cost).
 
-![Decks List](https://github.com/user-attachments/assets/0f6b1017-0eae-4591-b5d4-4fa028399ccf)
+### 3. Trading Interface  
 
-### 4. Portfolio  
+Dashboard to monitor all of your trades .
 
-Personal summary of invested decks, profits, and withdrawal options.
+<img width="1784" height="849" alt="image" src="https://github.com/user-attachments/assets/20f855a4-bbf6-47f9-a707-955cd1fa8a03" />
 
-![Portfolio](https://github.com/user-attachments/assets/0b8228e7-bf42-44ae-9634-53f1b22f789b)
 
-### 5. Deck Creation  
+### 4. Transaction Explorer 
 
-Form-based UI to define strategy parameters, pay creation fee, and submit for approval.
+Logs all of the transaction here
 
-![Create Deck](https://github.com/user-attachments/assets/ce71d1bb-47ed-4978-8886-1106489459b5)
+<img width="1829" height="830" alt="image" src="https://github.com/user-attachments/assets/7c7e0660-f537-4149-973c-0f13acd3753a" />
 
-### 6. Buy Token  
+### 5. WETH faucet   
 
-In-app swap interface to buy the platform’s token with RTBTC.
+Faucet to get Wrapped ETH
 
-![Buy Token](https://github.com/user-attachments/assets/8d593556-c935-47b2-aa5e-575b40546442)
+<img width="1652" height="713" alt="image" src="https://github.com/user-attachments/assets/5f62d1c4-91e8-40b7-8c05-777484578070" />
 
-## 🤖 AI’s View on Investment in Decks  
 
-Visualization of how our AI model evaluates deck performance and suggests portfolio allocations.
-
-![AI View](https://github.com/user-attachments/assets/ec8d404f-596f-4b95-b90c-e9145df568be)
 
 
 
