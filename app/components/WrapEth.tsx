@@ -9,62 +9,63 @@ import {
   useWaitForTransactionReceipt,
 } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
+import { FiDroplet, FiCheckCircle, FiExternalLink, FiLoader } from 'react-icons/fi';
+import Image from 'next/image'; // Import the Next.js Image component
 
-const WETH_CONTRACT_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ea00A7896Cf';
-
+const WETH_CONTRACT_ADDRESS = '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9';
 const WETH_ABI = [
   { name: "balanceOf", type: "function", "stateMutability": "view", "inputs": [{"name": "owner", "type": "address"}], "outputs": [{"name": "", "type": "uint256"}] },
   { name: "deposit", type: "function", "stateMutability": "payable", "inputs": [], "outputs": [] }
 ] as const;
 
-// function getFriendlyErrorMessage(error: WriteContractErrorType | null): string | null {
-//   if (!error) return null;
-//   if (error instanceof BaseError) {
-//     if (error.shortMessage) return error.shortMessage;
-//     const cause = error.cause as any;
-//     if (cause?.code === 4001 || cause?.code === 'ACTION_REJECTED') {
-//       return "Transaction rejected by user.";
-//     }
-//   }
-//   return error.message;
-// }
 
-export function WrapEth() {
+
+function BalanceDisplay({ label, value, isLoading, symbol, icon }: { label: string, value?: bigint, isLoading: boolean, symbol: string, icon: React.ReactNode }) {
+  const displayValue = value !== undefined ? `${parseFloat(formatEther(value)).toFixed(4)}` : '0.000';
+  
+  return (
+    <div className="bg-black/20 p-4 rounded-lg flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        <div className="text-xl text-gray-400">{icon}</div>
+        <div>
+          <p className="text-sm text-gray-400">{label}</p>
+          <div className="flex items-baseline gap-2">
+            {isLoading ? (
+              <FiLoader className="animate-spin text-lg text-white" />
+            ) : (
+              <p className="text-xl font-semibold text-white">{displayValue}</p>
+            )}
+            <span className="text-sm text-gray-500">{symbol}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+export default function WrapEth() {
   const [amount, setAmount] = useState('');
-
-  const { address, isConnected, status } = useAccount();
-  console.log('[DEBUG] Account Status:', { address, isConnected, status });
-
+  const { address } = useAccount();
   const { data: hash, writeContract, isPending } = useWriteContract();
 
-  const { 
-    data: ethBalance, 
-    refetch: refetchEthBalance,
-    isLoading: isEthBalanceLoading,
-    isError: isEthBalanceError,
-    error: ethBalanceError
-  } = useBalance({ 
-    address,
-    query: { enabled: !!address }
-  });
-  console.log('[DEBUG] ETH Balance Hook:', { data: ethBalance, isLoading: isEthBalanceLoading, isError: isEthBalanceError, error: ethBalanceError });
-
-  const { 
-    data: wethBalance, 
-    refetch: refetchWethBalance,
-    isLoading: isWethBalanceLoading,
-    isError: isWethBalanceError,
-    error: wethBalanceError
-  } = useReadContract({
+  const { data: ethBalance, refetch: refetchEthBalance, isLoading: isEthBalanceLoading } = useBalance({ address });
+  const { data: wethBalance, refetch: refetchWethBalance, isLoading: isWethBalanceLoading } = useReadContract({
     address: WETH_CONTRACT_ADDRESS,
     abi: WETH_ABI,
     functionName: 'balanceOf',
-    args: [address!], 
-    query: { enabled: !!address }, 
+    args: [address!],
+    query: { enabled: !!address },
   });
-  console.log('[DEBUG] WETH Balance Hook:', { data: wethBalance, isLoading: isWethBalanceLoading, isError: isWethBalanceError, error: wethBalanceError });
-
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
+
+  useEffect(() => {
+    if (isConfirmed) {
+      refetchEthBalance();
+      refetchWethBalance();
+      setAmount('');
+    }
+  }, [isConfirmed, refetchEthBalance, refetchWethBalance]);
 
   async function handleWrap() {
     if (!amount || parseFloat(amount) <= 0) {
@@ -79,68 +80,88 @@ export function WrapEth() {
     });
   }
 
-  useEffect(() => {
-    if (isConfirmed) {
-      refetchEthBalance();
-      refetchWethBalance();
-      setAmount('');
-    }
-  }, [isConfirmed, refetchEthBalance, refetchWethBalance]);
-
+  const isProcessing = isPending || isConfirming;
   const isBalancesLoading = isEthBalanceLoading || isWethBalanceLoading;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md w-full max-w-md">
+    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 w-full max-w-6xl mx-auto p-4">
       
-      {/* --- DEBUGGING UI: Display the raw connection status --- */}
-      <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md text-xs font-mono">
-        <h3 className="font-bold text-yellow-800 mb-1">Debug Info</h3>
-        <div><strong>Status:</strong> {status}</div>
-        <div><strong>Is Connected:</strong> {String(isConnected)}</div>
-        <div><strong>Address:</strong> {address || 'Not available'}</div>
-      </div>
       
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Wrap Sepolia ETH</h2>
-      
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between p-3 bg-gray-50 rounded-md">
-          <span className="font-medium text-gray-600">Your ETH Balance:</span>
-          <span className="font-mono text-gray-800">
-            {isBalancesLoading ? 'Loading...' : ethBalance ? `${parseFloat(formatEther(ethBalance.value)).toFixed(4)} ETH` : 'N/A'}
-          </span>
-        </div>
-        <div className="flex justify-between p-3 bg-gray-50 rounded-md">
-          <span className="font-medium text-gray-600">Your WETH Balance:</span>
-          <span className="font-mono text-gray-800">
-            {isBalancesLoading ? 'Loading...' : typeof wethBalance === 'bigint' ? `${parseFloat(formatEther(wethBalance)).toFixed(4)} WETH` : 'N/A'}
-          </span>
-        </div>
-      </div>
 
-      {/* --- DEBUGGING UI: Display balance loading errors --- */}
-      {isEthBalanceError && <div className="mb-2 text-sm text-red-600">ETH Balance Error: {ethBalanceError?.message}</div>}
-      {isWethBalanceError && <div className="mb-2 text-sm text-red-600">WETH Balance Error: {wethBalanceError?.message}</div>}
+      <div className="w-full lg:w-3/5 rounded-2xl bg-gray-800 bg-opacity-50 p-6 shadow-lg space-y-6">
+        <h2 className="text-xl font-bold">Wrap ETH into WETH</h2>
 
-      <div className="space-y-4">
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="0.0"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-          aria-label="Amount to wrap"
+        {/* Balance Displays */}
+        <div className="space-y-3">
+          <BalanceDisplay 
+            label="Your ETH Balance" 
+            value={ethBalance?.value}
+            isLoading={isBalancesLoading}
+            symbol="ETH"
+            icon={<FiDroplet />}
+          />
+          <BalanceDisplay 
+            label="Your WETH Balance" 
+            value={wethBalance}
+            isLoading={isBalancesLoading}
+            symbol="WETH"
+            icon={<div className="font-bold text-lg">W</div>}
+          />
+        </div>
+
+        {/* Input and Action Area */}
+        <div className="space-y-4 pt-4 border-t border-gray-700">
+          <div>
+            <label htmlFor="wrap-amount" className="block text-sm font-medium text-gray-400 mb-2">
+              Amount to Wrap
+            </label>
+            <input
+              id="wrap-amount"
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.0"
+              disabled={isProcessing}
+              className="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-violet-500 outline-none transition"
+            />
+          </div>
+          <button
+            onClick={handleWrap}
+            disabled={!address || isProcessing || !amount}
+            className="w-full flex items-center justify-center gap-3 text-lg bg-violet-600 hover:bg-violet-700 py-3 px-8 rounded-lg font-semibold disabled:bg-gray-600 disabled:cursor-not-allowed transition-all"
+          >
+            {isProcessing && <FiLoader className="animate-spin" />}
+            <span>{isPending ? 'Check Wallet...' : isConfirming ? 'Wrapping...' : 'Wrap ETH'}</span>
+          </button>
+        </div>
+        
+        {/* Transaction Status Feedback */}
+        {hash && (
+          <div className="text-sm text-center text-gray-400">
+            <p>Transaction Sent!</p>
+            <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="text-violet-400 hover:underline break-all">
+              View on Etherscan <FiExternalLink className="inline ml-1" />
+            </a>
+          </div>
+        )}
+        {isConfirmed && (
+          <div className="flex items-center justify-center gap-2 font-medium text-green-400">
+            <FiCheckCircle />
+            <span>Transaction successful! Balances updated.</span>
+          </div>
+        )}
+      </div>
+      <div className="w-full lg:w-5/5">
+        
+        <Image 
+          src="/faucet.jpg" 
+          alt="Sepolia Faucet Guide"
+          width={800}
+          height={800}
+          className="rounded-2xl shadow-lg object-cover"
+          priority 
         />
-        <button
-          onClick={handleWrap}
-          disabled={!address || isPending || isConfirming}
-          className="w-full py-3 px-4 bg-violet-600 text-white font-semibold rounded-md hover:bg-violet-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-        >
-          {isPending ? 'Check Wallet...' : isConfirming ? 'Wrapping...' : 'Wrap ETH'}
-        </button>
       </div>
-      
-      {hash && <div className="mt-4 text-sm text-gray-600">Transaction Hash: <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline break-all">{hash}</a></div>}
-      {isConfirmed && <div className="mt-2 text-green-600 font-medium">Transaction successful! Balances updated.</div>}
     </div>
   );
 }

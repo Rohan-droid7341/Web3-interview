@@ -8,8 +8,9 @@ import EthPriceTracker from "../components/EthPriceTracker";
 import TransactionHistory from "../components/TransactionHistory";
 import { FiActivity, FiClock,FiLogOut } from "react-icons/fi";
 import { usePrivy } from "@privy-io/react-auth";
+import WrapEth from "../components/WrapEth";
 
-type View = "trading" | "history";
+type View = "trading" | "history" | "faucet";
 
 export default function Trade() {
   const [activeView, setActiveView] = useState<View>("trading");
@@ -79,6 +80,17 @@ export default function Trade() {
             <FiClock />
             <span>Transaction History</span>
           </button>
+          <button
+            onClick={() => setActiveView("faucet")}
+            className={`flex items-center gap-2 px-4 py-3 font-semibold transition-colors duration-200 ${
+              activeView === "faucet"
+                ? "border-b-2 border-violet-400 text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+          >
+            <FiClock />
+            <span>Wrapped Eth Faucet </span>
+          </button>
         </div>
 
         {/* Conditionally Rendered Content Area */}
@@ -109,6 +121,11 @@ export default function Trade() {
           {activeView === "history" && (
             <div>
               <TransactionHistory />
+            </div>
+          )}
+          {activeView === "faucet" && (
+            <div>
+              <WrapEth />
             </div>
           )}
         </div>
