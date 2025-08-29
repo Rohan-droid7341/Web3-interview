@@ -138,39 +138,39 @@ export default function TradingInterface() {
   const needsApproval = wethAllowance && depositAmount ? wethAllowance < parseWETH(depositAmount) : false;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="max-w-xl mx-auto p-4 space-y-4">
       {/* Price Display */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">ETH Price</h2>
+      <div className="bg-white rounded-lg shadow-md p-4">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">Feed ETH Price</h2>
         <div className="text-4xl font-bold text-blue-600">
           {ethPrice ? formatPrice(ethPrice) : 'Loading...'}
         </div>
       </div>
 
       {/* Portfolio Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-md p-4">
+      <div className="rounded-lg bg-white">
+        <div className="p-4">
           <h3 className="text-sm font-medium text-gray-500">WETH Balance</h3>
           <p className="text-2xl font-bold text-gray-900">
             {wethBalance ? formatWETH(wethBalance) : '0.00'}
           </p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="p-4">
           <h3 className="text-sm font-medium text-gray-500">TestUSD Balance</h3>
           <p className="text-2xl font-bold text-gray-900">
             {testUSDBalance ? formatTestUSD(testUSDBalance) : '0.00'}
           </p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-md p-4">
+        {/* <div className="p-4">
           <h3 className="text-sm font-medium text-gray-500">Total Deposited</h3>
           <p className="text-2xl font-bold text-gray-900">
             {userDeposits ? formatWETH(userDeposits) : '0.00'} WETH
           </p>
-        </div>
+        </div> */}
         
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className=" p-4">
           <h3 className="text-sm font-medium text-gray-500">P&L</h3>
           <p className={`text-2xl font-bold ${pnlData?.isProfit ? 'text-green-600' : 'text-red-600'}`}>
             {pnlData ? `${pnlData.isProfit ? '+' : '-'}${pnlData.formatted} WETH` : '0.00 WETH'}
@@ -213,7 +213,7 @@ export default function TradingInterface() {
                 type="number"
                 value={depositAmount}
                 onChange={(e) => setDepositAmount(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-black focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="0.00"
                 step="0.001"
               />

@@ -4,7 +4,9 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Script from 'next/script';
+import { FiLock, FiKey, FiCpu, FiCheckCircle, FiXCircle, FiLoader, FiLogOut, FiArrowRight } from 'react-icons/fi';
 
+// Declaration for the snarkjs library loaded via script tag
 declare const snarkjs: any;
 
 export default function ZkpDashboardPage() {
@@ -17,13 +19,14 @@ export default function ZkpDashboardPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultMessage, setResultMessage] = useState<string | null>(null);
 
-  // not a user -> go back 
+  // Redirect to home if not authenticated
   useEffect(() => {
     if (ready && !authenticated) {
       router.push('/');
     }
   }, [ready, authenticated, router]);
 
+  // Fetch the verification key on component mount
   useEffect(() => {
     async function loadVerificationKey() {
       try {
@@ -35,10 +38,10 @@ export default function ZkpDashboardPage() {
       }
     }
     loadVerificationKey();
-  }, []); 
+  }, []);
 
   /**
-   * Converts a string into a BigInt that can be used as a private input in a Circom circuit.
+   * Converts a string into a BigInt for use as a private input in a Circom circuit.
    */
   function stringToBigInt(s: string): bigint {
     const encoder = new TextEncoder();
@@ -50,10 +53,12 @@ export default function ZkpDashboardPage() {
     return BigInt(hex);
   }
 
-  
+  /**
+   * Generates a ZK proof and verifies it on the client side.
+   */
   async function generateAndVerifyProof() {
     if (!user?.id || !isScriptLoaded || !verificationKey) {
-      alert('ZK components are not loaded yet. Please wait a moment and try again.');
+      alert('ZK components are not loaded yet. Please wait and try again.');
       return;
     }
 
@@ -62,22 +67,21 @@ export default function ZkpDashboardPage() {
     setZkp(null);
 
     try {
-      // 1. Generate the Proof
+      // Generate the proof using snarkjs
       const { proof, publicSignals } = await snarkjs.groth16.fullProve(
         { secret: stringToBigInt(user.id) },
         '/zkp/circuit.wasm',
         '/zkp/circuit_final.zkey'
       );
-      setZkp({ proof, publicSignals }); 
+      setZkp({ proof, publicSignals });
 
-      // 
+      // Verify the proof
       const isValid = await snarkjs.groth16.verify(verificationKey, publicSignals, proof);
 
-      
       if (isValid) {
-        setResultMessage('✅ Verification OK');
+        setResultMessage('Verification Successful');
       } else {
-        setResultMessage('❌ Invalid Proof');
+        setResultMessage('Verification Failed: Invalid Proof');
       }
 
     } catch (error) {
@@ -88,90 +92,127 @@ export default function ZkpDashboardPage() {
     }
   }
 
+  // A loading state while Privy is getting ready
   if (!ready || !authenticated) {
-    return <p className="p-4">Loading user...</p>;
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white">
+        <FiLoader className="animate-spin text-4xl" />
+        <p className="mt-4">Loading User...</p>
+      </main>
+    );
   }
-  
-  const isReady = isScriptLoaded && !!verificationKey;
-  
+
+  const isZkReady = isScriptLoaded && !!verificationKey;
+  const isVerificationSuccessful = resultMessage === 'Verification Successful';
+
   return (
     <>
-      <Script 
-        src="https://cdn.jsdelivr.net/npm/snarkjs@0.7.3/build/snarkjs.min.js" 
+      <Script
+        src="https://cdn.jsdelivr.net/npm/snarkjs@0.7.3/build/snarkjs.min.js"
         onLoad={() => setIsScriptLoaded(true)}
       />
 
-      <main className="flex min-h-screen flex-col items-center p-4 sm:p-12 bg-gray-100">
-        <div className="w-full max-w-4xl space-y-8">
-          
-          <div className="flex justify-between items-center">
-            <h1 className="text-3xl font-bold text-gray-800">Self-Contained ZKP Dashboard</h1>
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-gray-900 to-gray-800 p-4 sm:p-12 text-white">
+        <div className="w-full max-w-5xl space-y-10">
+
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-gray-700">
+            <div>
+              <h1 className="text-3xl font-bold">Self-Contained ZKP Dashboard</h1>
+              <p className="mt-1 text-gray-400">Generate and verify a Zero-Knowledge Proof entirely in your browser.</p>
+            </div>
             <button
-              onClick={() => logout().then(() => router.push('/'))}
-              className="text-sm bg-red-100 hover:bg-red-200 py-2 px-4 rounded-md text-red-700"
+              onClick={logout}
+              className="flex items-center gap-2 rounded-lg bg-gray-700 px-4 py-2 text-base font-semibold transition hover:bg-gray-600 mt-4 sm:mt-0"
             >
-              Logout
+              <FiLogOut />
+              <span>Logout</span>
             </button>
           </div>
 
-          {/* Section 1: The Components of ZKP */}
-          <div className="p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold">The 3 Components of our ZK Proof</h2>
-            <p className="mt-2 text-gray-600">
-              Zero-Knowledge Proofs involve three key pieces of data. Here, we generate a proof in the browser and then verify it immediately.
-            </p>
-            
-            <div className="mt-4 space-y-4">
-              {/* The Secret */}
-              <div>
-                <h3 className="font-semibold text-violet-700">1. The Secret (Private Input)</h3>
-                <p className="text-sm text-gray-600">This is the private data that only you know. For this demo, it's your unique Privy DID. You will prove you know this without ever revealing it.</p>
-                <pre className="mt-1 bg-violet-50 text-violet-900 font-mono p-2 text-xs rounded overflow-x-auto">{user?.id ?? "NO user Id" }</pre>
+          {/* ZKP Components Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: The Secret */}
+            <div className="rounded-2xl bg-gray-800 bg-opacity-50 p-6 shadow-lg">
+              <div className="flex items-center gap-3">
+                <FiLock className="text-violet-400 text-2xl" />
+                <h3 className="font-semibold text-lg">1. The Secret (Private)</h3>
               </div>
-              {/* The Verification Key */}
-              <div>
-                <h3 className="font-semibold text-blue-700">2. The Verification Key (Public)</h3>
-                <p className="text-sm text-gray-600">This is a public "lock" generated from our circuit. It is mathematically designed to be "unlocked" only by a valid proof for a corresponding secret.</p>
-                <pre className="mt-1 h-32 bg-blue-50 text-blue-900 font-mono p-2 text-xs rounded overflow-auto">{verificationKey ? JSON.stringify(verificationKey, null, 2) : "Loading..."}</pre>
+              <p className="mt-2 text-sm text-gray-400">Your unique Privy DID, which you will prove ownership of without revealing it.</p>
+              <pre className="mt-4 bg-gray-900 text-violet-300 font-mono p-3 text-xs rounded-md overflow-x-auto">{user?.id}</pre>
+            </div>
+
+            {/* Card 2: The Verification Key */}
+            <div className="rounded-2xl bg-gray-800 bg-opacity-50 p-6 shadow-lg">
+              <div className="flex items-center gap-3">
+                <FiKey className="text-blue-400 text-2xl" />
+                <h3 className="font-semibold text-lg">2. The Verification Key</h3>
               </div>
-              {/* The Proof */}
-              <div>
-                <h3 className="font-semibold text-green-700">3. The Proof (Generated & Public)</h3>
-                <p className="text-sm text-gray-600">This is the cryptographic "key" you generate. It proves you have the secret that matches the public commitment (inside `publicSignals`), and it's structured to fit the "lock" (the Verification Key).</p>
+              <p className="mt-2 text-sm text-gray-400">A public key used to verify that your generated proof is valid.</p>
+              <div className="mt-4 h-20 bg-gray-900 text-blue-300 font-mono p-3 text-xs rounded-md overflow-hidden flex items-center justify-center">
+                {verificationKey ? "Verification Key Loaded" : <FiLoader className="animate-spin" />}
+              </div>
+            </div>
+
+            {/* Card 3: The Proof */}
+            <div className="rounded-2xl bg-gray-800 bg-opacity-50 p-6 shadow-lg">
+              <div className="flex items-center gap-3">
+                <FiCpu className="text-green-400 text-2xl" />
+                <h3 className="font-semibold text-lg">3. The Proof (Generated)</h3>
+              </div>
+              <p className="mt-2 text-sm text-gray-400">The cryptographic proof you generate that attests to your knowledge of the secret.</p>
+              <div className="mt-4 h-20 bg-gray-900 text-green-300 font-mono p-3 text-xs rounded-md flex items-center justify-center">
+                {zkp ? "Proof Generated" : "Awaiting Generation..."}
               </div>
             </div>
           </div>
 
-          {/* Section 2: The Action */}
-          <div className="p-6 bg-white rounded-lg shadow-md text-center">
+          {/* Action Button */}
+          <div className="text-center">
             <button
               onClick={generateAndVerifyProof}
-              disabled={!isReady || isProcessing} 
-              className="w-full sm:w-auto text-base bg-violet-600 hover:bg-violet-700 py-3 px-6 rounded-md text-white disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              disabled={!isZkReady || isProcessing}
+              className="flex items-center justify-center gap-3 w-full sm:w-auto text-lg bg-violet-600 hover:bg-violet-700 py-3 px-8 rounded-lg font-semibold disabled:bg-gray-600 disabled:cursor-not-allowed transition-all mx-auto"
             >
-              {isProcessing ? "Processing..." : !isReady ? "Loading ZK Components..." : "Generate and Verify Proof"}
+              {isProcessing && <FiLoader className="animate-spin" />}
+              <span>
+                {isProcessing ? "Processing..." : !isZkReady ? "Loading ZK Components..." : "Generate and Verify Proof"}
+              </span>
             </button>
           </div>
 
-          {/* Section 3: The Results */}
-          {zkp && (
-            <div className="p-6 bg-white rounded-lg shadow-md animate-fade-in">
+          {/* Results Section */}
+          {resultMessage && (
+            <div className="rounded-2xl bg-gray-800 bg-opacity-50 p-6 shadow-lg animate-fade-in space-y-6">
               <h2 className="text-xl font-semibold">Results</h2>
-              
-              {/* Display Proof */}
-              <div>
-                <h3 className="mt-4 font-semibold text-green-700">Generated Proof & Public Signals</h3>
-                <p className="text-sm text-gray-600">This is the data that would normally be sent to a server or smart contract. Notice the `publicSignals` contains the public "hash" of your secret DID.</p>
-                <pre className="mt-1 h-48 bg-green-50 text-green-900 font-mono p-2 text-xs rounded overflow-auto">{JSON.stringify(zkp, null, 2)}</pre>
+              {/* Verification Result Banner */}
+              <div className={`flex items-center gap-4 p-4 rounded-lg text-lg font-bold ${isVerificationSuccessful ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`}>
+                {isVerificationSuccessful ? <FiCheckCircle className="text-2xl" /> : <FiXCircle className="text-2xl" />}
+                {resultMessage}
               </div>
-              
-              {/* Display Verification Result */}
-              <div className="mt-6">
-                <h3 className="font-semibold text-gray-700">Verification Result</h3>
-                <div className={`mt-2 p-4 rounded-md text-lg text-center font-bold ${resultMessage?.startsWith('✅') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                  {resultMessage}
+
+              {/* Generated Proof Data */}
+              {zkp && (
+                <div>
+                  <h3 className="font-semibold text-gray-300">Generated Proof & Public Signals</h3>
+                  <p className="mt-1 text-sm text-gray-400">This data can now be sent to a server or smart contract for verification.</p>
+                  <pre className="mt-3 h-48 bg-gray-900 text-gray-300 font-mono p-3 text-xs rounded-md overflow-auto">{JSON.stringify(zkp, null, 2)}</pre>
                 </div>
-              </div>
+              )}
+
+              {/* === NEW: Button to proceed to Trading App === */}
+              {isVerificationSuccessful && (
+                <div className="pt-6 border-t border-gray-700 text-center">
+                  <p className="text-gray-400 mb-4">Your identity has been verified. You can now proceed.</p>
+                  <button
+                    onClick={() => router.push('/Trade')}
+                    className="flex items-center justify-center gap-3 w-full sm:w-auto text-lg bg-green-600 hover:bg-green-700 py-3 px-8 rounded-lg font-semibold transition-all mx-auto"
+                  >
+                    <span>Go to Trading App</span>
+                    <FiArrowRight />
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
