@@ -12,7 +12,8 @@ This immersive and risk-free environment provides an ideal training ground for a
 
 - [Core Features](#core-features)  
 - [Tech Stack](#tech-stack)  
-- [UI Components](#ui-components)  
+- [UI Components](#ui-components)
+- [How It Works](#how-it-works)
 - [Rating Tech Stack](#rating-tech-stack)  
 - [Future Plans](#future-plans)  
 
@@ -75,6 +76,27 @@ Faucet to get Wrapped ETH
 <img width="1652" height="713" alt="image" src="https://github.com/user-attachments/assets/5f62d1c4-91e8-40b7-8c05-777484578070" />
 
 
+## How It Works
 
+<img width="1090" height="799" alt="Screenshot 2025-08-30 003250" src="https://github.com/user-attachments/assets/0959cecc-bf42-4a1d-bdbf-74362659e705" />
+
+## Rating Tech Stack
+
+| Tech Stack             | Difficulty | Usefulness | Personal Notes |
+|-------------------------|------------|------------|----------------|
+| Privy (Wallets)        | Easy-Medium     |  High       | Great for user who dont have wallets. Rainbow kit is still easier |
+| Zero Knowledge Proofs   | Hard       |  High       | Great for dapps that need to be secure |
+| Wagmi (Smart Contracts) | Medium       |  High       | Best frontend integration tool  |
+| GraphQL (Indexing)      | Medium     | Very HIgh     | Saves many lines of code in contract and best for making contract short |
+| Chainlink Price Feeds   | Medium       |  High       | Reliable for live data , critical for trading logic |
+| ERC20 / Trading Contract| Medium-Hard     | High       | Great fo creating dummy Tokens |
+
+##  Future Plans  
+
+The next phase of **Overwhelm** focuses on pushing the boundaries of decentralized trading by integrating advanced tools and protocols:  
+
+- **Chainlink Automation** → Enable automated trade execution so users can set conditions (like stop-loss or take-profit) and let the system handle trades without manual intervention.  
+- **ElizaOS Bots** → Deploy customizable autonomous trading bots that can analyze data, make decisions, and execute trades on behalf of users, giving a taste of algorithmic trading.  
+- **Chainlink CCIP (Cross-Chain Interoperability Protocol)** → Expand trading capabilities beyond Sepolia/WETH to multiple blockchains and token standards, enabling a true cross-chain trading experience.  
 
 
